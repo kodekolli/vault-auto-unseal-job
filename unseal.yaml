@@ -1,0 +1,33 @@
+kind: CronJob
+metadata:
+  name: vault-status
+spec:
+  schedule: "*/10 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: vault-status
+            image: <image>
+            imagePullPolicy: IfNotPresent
+            env:
+              - name: UNSEAL_KEYS
+                value: "<unseal_keys_comma_separeted>"
+              - name: KUBECONFIG
+                value: "/opt/<kubeconfig_file_name>"
+            command: ["python3.8"]
+            args: ["/script/unseal.py"]
+            volumeMounts:
+              - name: script
+                mountPath: /script
+              - name: k8config
+                mountPath: /opt
+          volumes:
+            - name: script
+              configMap:
+                name: script
+            - name: k8config
+              configMap:
+                name: k8config
+          restartPolicy: OnFailure
