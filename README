@@ -1,0 +1,24 @@
+Vault is a secrets management tool, which encrypts and stores credentials, API keys, and other secrets for use in distributed systems. So, the availability of vault is very crucial.
+python code will monitor the vault seal status every 10 minutes(change according to your requirement) and unseal if it is sealed.
+This code works on vault running on the Kubernetes cluster.
+
+To run the python code in the K8 cluster, you need a custom image. Build the new image with the Dockerfile.
+
+Once the image is built, use that image in the K8 cronjob. Use the yaml and create the cronjob.
+Before creating the YAML, you need to create a configmap of the python code and namespace kubeconfig.
+
+kubectl create cm script --from-file=<path_to_unseal.py>
+kubectl create cm k8config --from-file=<path_to_k8config>
+
+
+Expected output:
+
+172.25.20.11
+http://172.25.20.11:8200
+The vault is not sealed!
+172.25.20.7
+http://172.25.20.7:8200
+The vault is not sealed!
+172.25.20.9
+http://172.25.20.9:8200
+The vault is not sealed!
